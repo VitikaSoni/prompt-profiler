@@ -77,7 +77,7 @@ export default function EditorTab({
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center ">
-              <span className="text-lg font-semibold">System Prompt</span>
+              <span className="text-xl font-semibold">System Prompt</span>
               <span className="text-xs text-muted-foreground bg-blue-50 px-2 py-1 text-blue-500 ml-2">
                 Editing Version {versionNumber}
               </span>
@@ -117,7 +117,7 @@ export default function EditorTab({
         {/* Test Cases Section - Scrollable */}
         <Card className="flex-1 overflow-hidden">
           <CardHeader className="py-3">
-            <CardTitle>Test Cases</CardTitle>
+            <CardTitle className="text-xl font-semibold">Test Cases</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="h-full overflow-hidden">
@@ -132,7 +132,7 @@ export default function EditorTab({
         <Card className="flex-1">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Run Results</span>
+              <span className="text-xl font-semibold">Results</span>
               {isResultsOutdated && (
                 <Badge
                   variant="secondary"

@@ -102,7 +102,7 @@ export default function TestCases({ promptId }: TestCasesProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center px-4 py-2">
+      <div className="flex justify-between items-center px-6 py-2">
         {/* <h3 className="text-lg font-semibold">Test Cases</h3> */}
         <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -110,7 +110,7 @@ export default function TestCases({ promptId }: TestCasesProps) {
         </Button>
       </div>
 
-      <div className="flex-1 overflow-x-auto px-4">
+      <div className="flex-1 overflow-x-auto px-6">
         {testCases.length === 0 ? (
           <div className="text-gray-500 text-center py-4 h-[200px] flex items-center justify-center">
             No test cases yet. Add your first test case!
@@ -124,13 +124,7 @@ export default function TestCases({ promptId }: TestCasesProps) {
                 onClick={() => openViewDialog(testCase)}
               >
                 <div className="flex flex-col flex-1">
-                  <CardHeader className="py-3">
-                    <CardTitle className="text-sm">
-                      Test Case {testCase.id}
-                    </CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="flex-1 overflow-hidden">
+                  <CardContent className="flex-1 overflow-hidden mt-4">
                     <p className="text-sm text-muted-foreground line-clamp-2">
                       {testCase.user_message}
                     </p>

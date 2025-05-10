@@ -4,11 +4,12 @@ import Dashboard from "./pages/Dashboard";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Prompt from "./pages/Prompt";
 import TopBar from "./components/TopBar";
+import Loading from "./components/other/Loading";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   if (isAuthenticated === null) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   return isAuthenticated ? (
     <>

@@ -8,6 +8,9 @@ from models.user import User
 import os
 from openai import AzureOpenAI, OpenAIError
 from dotenv import load_dotenv
+from crud import run_log as run_log_crud
+from schemas.run_log import RunLogCreate
+
 
 load_dotenv()
 
@@ -87,4 +90,14 @@ async def run_prompt(
                 )
             )
 
+        run_log_crud.create_run_log(
+            db=db,
+            run_log=RunLogCreate(
+                user_id=current_user.id,
+                prompt_id=prompt_id,
+                system_prompt=system_prompt,
+                user_message=tc.user_message,
+                response=output_text,
+            ),
+        )
     return RunResponse(results=results)

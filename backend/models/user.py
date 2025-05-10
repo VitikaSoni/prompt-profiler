@@ -11,3 +11,4 @@ class User(Base):
     firebase_uid = Column(String, unique=True, index=True, nullable=True)
 
     prompts = relationship("Prompt", back_populates="owner")
+    run_logs = relationship("RunLog", back_populates="user")

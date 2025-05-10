@@ -61,7 +61,7 @@ export default function PromptCard({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setIsDeleteModalOpen(true)}
-            className="text-destructive hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
+            className="text-red-500 hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
           >
             Delete
           </DropdownMenuItem>

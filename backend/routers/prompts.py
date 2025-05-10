@@ -33,6 +33,18 @@ def get_prompts(
     return db.query(Prompt).filter(Prompt.user_id == current_user.id).all()
 
 
+@router.get("/{prompt_id}", response_model=PromptSchema)
+def get_prompt(
+    prompt_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    prompt = prompt_crud.get_prompt(db=db, prompt_id=prompt_id, user_id=current_user.id)
+    if not prompt:
+        raise HTTPException(status_code=404, detail="Prompt not found")
+    return prompt
+
+
 @router.delete("/{prompt_id}", response_model=bool)
 def delete_prompt(
     prompt_id: int,

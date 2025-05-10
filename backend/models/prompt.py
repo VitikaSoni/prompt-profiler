@@ -19,3 +19,4 @@ class Prompt(Base):
     versions = relationship(
         "Version", back_populates="prompt", cascade="all, delete-orphan"
     )
+    run_logs = relationship("RunLog", back_populates="prompt")

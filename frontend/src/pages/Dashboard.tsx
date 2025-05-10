@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Prompt } from "../services/api";
 import PromptCard from "../components/cards/PromptCard";
-import AddPromptCard from "../components/cards/AddPromptCard";
+
 import AddPromptModal from "../components/modals/AddPromptModal";
 import { promptsApi } from "../services/api";
-
+import { motion, AnimatePresence } from "framer-motion";
+import Loading from "../components/other/Loading";
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,93 +57,135 @@ export default function Dashboard() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className=" mx-auto px-4 sm:px-6 lg:px-10 py-4">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-4 sm:py-6 lg:py-8">
         {/* Header Section */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-card rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8 border border-border"
+        >
+          <div className="max-w-3xl">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
+              Welcome back, {user?.displayName}
+            </h1>
+            <p className="text-base sm:text-lg text-muted-foreground mt-2">
+              Manage your prompts and create new ones to enhance your workflow
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Prompts Grid Section */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-card rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 border border-border"
+        >
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Welcome back, {user?.username}!
-              </h1>
-              <p className="text-gray-500 mt-1">
-                Manage your prompts and create new ones
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground">
+                Your Prompts
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">
+                {prompts.length} {prompts.length === 1 ? "prompt" : "prompts"}{" "}
+                in your collection
               </p>
             </div>
-            <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setIsModalOpen(true)}
+              className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
             >
               <svg
+                className="h-5 w-5 mr-2"
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
                 <path
                   fillRule="evenodd"
-                  d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
+                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                   clipRule="evenodd"
                 />
               </svg>
-              Logout
-            </button>
-          </div>
-        </div>
-
-        {/* Prompts Grid Section */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Your Prompts
-            </h2>
-            <div className="text-sm text-gray-500">
-              {prompts.length} {prompts.length === 1 ? "prompt" : "prompts"}
-            </div>
+              New Prompt
+            </motion.button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AddPromptCard onClick={() => setIsModalOpen(true)} />
-            {prompts.map((prompt) => (
-              <PromptCard
-                key={prompt.id}
-                prompt={prompt}
-                onDelete={handleDeletePrompt}
-                onRename={handleRenamePrompt}
-              />
-            ))}
-          </div>
-
-          {prompts.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-gray-400 mb-2">
-                <svg
-                  className="mx-auto h-12 w-12"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+          <motion.div
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+          >
+            <AnimatePresence>
+              {prompts.map((prompt, index) => (
+                <motion.div
+                  key={prompt.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  <PromptCard
+                    prompt={prompt}
+                    onDelete={handleDeletePrompt}
+                    onRename={handleRenamePrompt}
                   />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                No prompts yet
-              </h3>
-              <p className="text-gray-500">
-                Click the + card to create your first prompt
-              </p>
-            </div>
-          )}
-        </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+
+          <AnimatePresence>
+            {prompts.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="text-center py-8 sm:py-12 lg:py-16"
+              >
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="text-muted-foreground mb-4"
+                >
+                  <svg
+                    className="mx-auto h-12 w-12 sm:h-16 sm:w-16"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </motion.div>
+                <h3 className="text-lg sm:text-xl font-medium text-foreground mb-2">
+                  No prompts yet
+                </h3>
+                <p className="text-sm sm:text-base text-muted-foreground max-w-sm mx-auto px-4">
+                  Get started by creating your first prompt. Click the "New
+                  Prompt" button above to begin.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
 
       <AddPromptModal
@@ -150,6 +193,6 @@ export default function Dashboard() {
         onClose={() => setIsModalOpen(false)}
         onCreate={handleCreatePrompt}
       />
-    </div>
+    </motion.div>
   );
 }

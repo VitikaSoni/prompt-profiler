@@ -24,18 +24,26 @@ export default function DeleteConfirmationModal({
 }: DeleteConfirmationModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white">
+      <DialogContent className="bg-gray-800 border-gray-700">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-white">{title}</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <p>{message}</p>
+          <p className="text-gray-300">{message}</p>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+          >
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
+          <Button
+            variant="destructive"
+            onClick={onConfirm}
+            className="bg-red-500 hover:bg-red-600 text-white"
+          >
             Delete
           </Button>
         </DialogFooter>

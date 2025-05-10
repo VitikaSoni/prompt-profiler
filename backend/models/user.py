@@ -7,10 +7,8 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    full_name = Column(String)
-    disabled = Column(Boolean, default=False)
+    firebase_uid = Column(String, unique=True, index=True, nullable=True)
 
     prompts = relationship("Prompt", back_populates="owner")
+    run_logs = relationship("RunLog", back_populates="user")

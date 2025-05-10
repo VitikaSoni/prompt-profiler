@@ -35,23 +35,33 @@ export default function PromptCard({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Card className="w-full h-[180px] cursor-pointer flex flex-col">
+          <Card className="w-full h-[180px] cursor-pointer flex flex-col bg-card border-border hover:border-primary transition-colors duration-200">
             <CardHeader className="flex-none">
-              <CardTitle className="line-clamp-1">{prompt.name}</CardTitle>
+              <CardTitle className="line-clamp-1 text-foreground">
+                {prompt.name}
+              </CardTitle>
             </CardHeader>
-            <div className="mt-auto ml-auto text-sm text-gray-500 p-4">
+            <div className="mt-auto ml-auto text-sm text-muted-foreground p-4">
               Created at {formatDate(prompt.created_at)}
             </div>
           </Card>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={handleOpen}>Open</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsRenameModalOpen(true)}>
+        <DropdownMenuContent align="end" className="bg-popover border-border">
+          <DropdownMenuItem
+            onClick={handleOpen}
+            className="text-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+          >
+            Open
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setIsRenameModalOpen(true)}
+            className="text-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+          >
             Rename
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setIsDeleteModalOpen(true)}
-            className="text-red-600"
+            className="text-red-500 hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
           >
             Delete
           </DropdownMenuItem>

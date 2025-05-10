@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, users, prompts, test_cases, versions, run
+from routers import users, prompts, test_cases, versions, run
 from database import engine, Base
 import os
 from dotenv import load_dotenv
@@ -22,7 +22,6 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(prompts.router, prefix="/prompts", tags=["prompts"])
 app.include_router(test_cases.router, prefix="/test-cases", tags=["test-cases"])

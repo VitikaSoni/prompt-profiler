@@ -30,24 +30,29 @@ export default function AddPromptModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white">
+      <DialogContent className="bg-gray-800 border-gray-700">
         <DialogHeader>
-          <DialogTitle>Create New Prompt</DialogTitle>
+          <DialogTitle className="text-white">Create New Prompt</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter prompt name"
-            className="w-full"
+            className="w-full bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
           />
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={onClose}>
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
               Cancel
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={isSubmitting || !name.trim()}
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
             >
               {isSubmitting ? "Creating..." : "Create"}
             </Button>

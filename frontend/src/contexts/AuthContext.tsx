@@ -5,78 +5,58 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import axios from "axios";
-import { authApi, RegisterData, User, usersApi } from "@/services/api";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  User as FirebaseUser,
+} from "firebase/auth";
+import { auth } from "../config/firebase";
 
 interface AuthContextType {
   isAuthenticated: boolean | null;
-  login: (username: string, password: string) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  login: () => Promise<void>;
   logout: () => void;
-  user: User | null;
+  user: FirebaseUser | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log("token", token);
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      fetchUser();
-    } else {
-      setIsAuthenticated(false);
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setIsAuthenticated(!!user);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const fetchUser = async () => {
+  const login = async () => {
     try {
-      const response = await usersApi.getCurrentUser();
-      setUser(response);
-      setIsAuthenticated(true);
-      console.log("settung isAuthenticated to true");
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
     } catch (error) {
-      localStorage.removeItem("token");
-      setIsAuthenticated(false);
-      delete axios.defaults.headers.common["Authorization"];
+      console.error("Error signing in with Google:", error);
+      throw error;
     }
   };
 
-  const register = async (data: RegisterData) => {
-    await authApi.register(data);
-  };
-
-  const login = async (username: string, password: string) => {
+  const logout = async () => {
     try {
-      const response = await authApi.login({ username, password });
-
-      localStorage.setItem("token", response.access_token);
-
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.access_token}`;
-      await fetchUser();
+      await firebaseSignOut(auth);
+      window.location.href = "/login";
     } catch (error) {
-      throw new Error("Invalid credentials");
+      console.error("Error signing out:", error);
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    delete axios.defaults.headers.common["Authorization"];
-    setIsAuthenticated(false);
-    setUser(null);
-    window.location.href = "/login";
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, login, register, logout, user }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, user }}>
       {children}
     </AuthContext.Provider>
   );

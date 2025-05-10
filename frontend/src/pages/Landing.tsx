@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { motion } from "framer-motion";
-import { ArrowRight, Code, GitBranch, Zap, Shield, Users } from "lucide-react";
+import {
+  ArrowRight,
+  Code,
+  GitBranch,
+  Zap,
+  Shield,
+  Users,
+  Github,
+} from "lucide-react";
 
 const Landing = () => {
   const { isAuthenticated } = useAuth();
@@ -51,11 +59,14 @@ const Landing = () => {
                   Go to Dashboard <ArrowRight className="w-5 h-5" />
                 </Link>
               )}
+
               <a
-                href="#features"
+                href="https://github.com/VitikaSoni/prompt-profiler"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-card hover:bg-accent text-foreground font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 flex items-center justify-center gap-2 border border-border"
               >
-                Learn More
+                <Github className="w-5 h-5" /> GitHub
               </a>
             </motion.div>
           </motion.div>

@@ -1,3 +1,7 @@
+## Landing
+
+![Landing Page](screenshots/landing.png)
+
 ## Home
 
 ![Home Page](screenshots/home.png)
@@ -13,7 +17,3 @@
 ## Login
 
 ![Login Page](screenshots/login.png)
-
-## Register
-
-![Register Page](screenshots/register.png)

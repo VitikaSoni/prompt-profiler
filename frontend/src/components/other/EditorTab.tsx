@@ -4,11 +4,19 @@ import { Textarea } from "../ui/textarea";
 import { Label } from "@/components/ui/label";
 import TestCases from "../other/TestCases";
 import { useToast } from "@/components/ui/use-toast";
-import { Play, Save } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Play, Save, AlertCircle } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { runApi, RunResult } from "@/services/api/run";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface EditorTabProps {
   promptId: number;
@@ -70,112 +78,194 @@ export default function EditorTab({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:h-[calc(100vh-20rem)]">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 md:px-4 h-full md:h-[calc(100vh-160px)] overflow-y-auto md:overflow-hidden"
+    >
       {/* Left Column - System Prompt and Test Cases */}
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full space-y-4 md:space-y-6 overflow-hidden">
         {/* System Prompt Section - Fixed */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center ">
-              <span className="text-xl font-semibold">System Prompt</span>
-              <span className="text-xs text-muted-foreground bg-blue-50 px-2 py-1 text-blue-500 ml-2">
-                Editing Version {versionNumber}
-              </span>
-              <div className="flex gap-2 ml-auto">
-                <Button
+        <Card className="border shadow-sm flex-1 flex flex-col">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="flex-1 flex flex-col"
+          >
+            <CardHeader className="pb-2 md:pb-4 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <CardTitle className="text-lg md:text-xl font-semibold tracking-tight">
+                    System Prompt
+                  </CardTitle>
+                  <CardDescription className="mt-1 text-sm md:text-base">
+                    Define the behavior and constraints for your AI assistant
+                  </CardDescription>
+                </div>
+                <Badge
                   variant="outline"
-                  size="sm"
-                  onClick={handleSaveSystemPrompt}
-                  disabled={!hasChanges}
-                  className="flex items-center gap-2"
+                  className="bg-blue-50 text-blue-700 border-blue-200 w-fit"
                 >
-                  <Save className="h-4 w-4" />
-                  Save
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleRun}
-                  disabled={isRunning}
-                  className="flex items-center gap-2"
-                >
-                  <Play className="h-4 w-4" />
-                  {isRunning ? "Running..." : "Run"}
-                </Button>
+                  Version {versionNumber}
+                </Badge>
               </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              value={systemPrompt}
-              onChange={(e) => setSystemPrompt(e.target.value)}
-              className="h-[150px] font-mono resize-none"
-              placeholder="Enter your system prompt here..."
-            />
-          </CardContent>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 flex flex-col min-h-0">
+                <Textarea
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  className="font-mono resize-none text-sm flex-1 min-h-[200px] md:min-h-0"
+                  placeholder="Enter your system prompt here..."
+                />
+                <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSaveSystemPrompt}
+                    disabled={!hasChanges}
+                    className="flex items-center gap-2 w-full sm:w-auto"
+                  >
+                    <Save className="h-4 w-4" />
+                    Save Changes
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleRun}
+                    disabled={isRunning}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+                  >
+                    <Play className="h-4 w-4" />
+                    {isRunning ? "Running..." : "Run Tests"}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </motion.div>
         </Card>
 
         {/* Test Cases Section - Scrollable */}
-        <Card className="flex-1 overflow-hidden">
-          <CardHeader className="py-3">
-            <CardTitle className="text-xl font-semibold">Test Cases</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="h-full overflow-hidden">
-              <TestCases promptId={promptId} />
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="border shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-semibold tracking-tight">
+                Test Cases
+              </CardTitle>
+              <CardDescription>
+                Evaluate your system prompt against these test scenarios
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="h-full overflow-hidden">
+                <TestCases promptId={promptId} />
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       {/* Right Column - Run Results */}
-      <div className="flex flex-col h-full overflow-scroll">
-        <Card className="flex-1">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span className="text-xl font-semibold">Results</span>
-              {isResultsOutdated && (
-                <Badge
-                  variant="secondary"
-                  className="bg-yellow-100 text-yellow-800"
-                >
-                  Outdated
-                </Badge>
-              )}
-            </CardTitle>
+      <motion.div
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="flex flex-col h-full overflow-hidden"
+      >
+        <Card className="flex-1 border shadow-sm flex flex-col overflow-hidden">
+          <CardHeader className="pb-2 md:pb-4 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <CardTitle className="text-lg md:text-xl font-semibold tracking-tight">
+                  Test Results
+                </CardTitle>
+                <CardDescription className="text-sm md:text-base">
+                  View the output of your system prompt against test cases
+                </CardDescription>
+              </div>
+              <AnimatePresence>
+                {isResultsOutdated && (
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1 w-fit"
+                    >
+                      <AlertCircle className="h-3 w-3" />
+                      Outdated
+                    </Badge>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </CardHeader>
-          <CardContent className="h-[calc(100%-4rem)]">
-            {runResults ? (
-              <div className="space-y-4">
-                {runResults.map((result) => (
-                  <Card key={result.test_case_id} className="bg-muted/50">
-                    <CardContent className="space-y-3 p-4">
-                      <div>
-                        <Label className="text-sm text-muted-foreground">
-                          User Message
-                        </Label>
-                        <p className="mt-1 text-sm">{result.user_message}</p>
-                      </div>
-                      <Separator />
-                      <div>
-                        <Label className="text-sm text-muted-foreground">
-                          Output
-                        </Label>
-                        <p className="mt-1 text-sm font-mono bg-background p-2 rounded">
-                          {result.output}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center text-muted-foreground py-8">
-                Run the prompt to see results
-              </div>
-            )}
+          <CardContent className="flex-1 overflow-y-auto">
+            <AnimatePresence mode="wait">
+              {runResults ? (
+                <motion.div
+                  key="results"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-3 md:space-y-4"
+                >
+                  {runResults.map((result, index) => (
+                    <motion.div
+                      key={result.test_case_id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <Card className="bg-muted/30 border shadow-sm">
+                        <CardContent className="space-y-3 md:space-y-4 p-3 md:p-4">
+                          <div>
+                            <Label className="text-sm font-medium text-muted-foreground">
+                              User Message
+                            </Label>
+                            <p className="mt-2 text-sm bg-background p-2 md:p-3 rounded-md border">
+                              {result.user_message}
+                            </p>
+                          </div>
+                          <Separator className="my-2" />
+                          <div>
+                            <Label className="text-sm font-medium text-muted-foreground">
+                              AI Response
+                            </Label>
+                            <p className="mt-2 text-sm font-mono bg-background p-2 md:p-3 rounded-md border whitespace-pre-wrap">
+                              {result.output}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex flex-col items-center justify-center h-full text-muted-foreground space-y-2"
+                >
+                  <Play className="h-6 w-6 md:h-8 md:w-8 opacity-50" />
+                  <p className="text-sm md:text-base">
+                    Run the prompt to see test results
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

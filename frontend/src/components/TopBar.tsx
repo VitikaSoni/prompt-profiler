@@ -1,11 +1,14 @@
 import { logos } from "@/assets";
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const TopBar: React.FC = () => {
   const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -29,18 +32,25 @@ const TopBar: React.FC = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate("/");
+  };
+
   return (
     <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 shadow-sm z-50">
       <div className="h-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-full">
-          <div className="flex items-center space-x-3">
+          <button
+            className="flex items-center space-x-3"
+            onClick={handleLogoClick}
+          >
             {/* Project Icon */}
             <img src={logos.logo} alt="logo" className="w-8 h-8" />
             {/* Project Name */}
             <h1 className="text-xl font-semibold bg-gradient-to-r from-[#192b53] to-[#4d6eb4] bg-clip-text text-transparent">
               Prompt Profiler
             </h1>
-          </div>
+          </button>
 
           {/* User Avatar with Dropdown */}
           <div className="flex ml-auto relative" ref={dropdownRef}>

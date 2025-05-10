@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { Version } from "@/services/api";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Clock, Code, FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 interface VersionsTabProps {
   versions: Version[];
@@ -13,6 +18,7 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
   const [selectedVersion, setSelectedVersion] = useState<Version | null>(
     versions.length > 0 ? versions[0] : null
   );
+  const [isVersionListOpen, setIsVersionListOpen] = useState(false);
 
   const formatLocalTime = (dateString: string) => {
     const utcDate = new Date(dateString);
@@ -22,82 +28,192 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full px-4 lg:px-6"
+    >
+      {/* Mobile Version List Toggle */}
+      <div className="lg:hidden">
+        <Button
+          variant="outline"
+          className="w-full flex items-center justify-between"
+          onClick={() => setIsVersionListOpen(!isVersionListOpen)}
+        >
+          <span className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Version History
+          </span>
+          {isVersionListOpen ? (
+            <ChevronUp className="h-4 w-4" />
+          ) : (
+            <ChevronDown className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+
       {/* Version List */}
-      <Card className="lg:col-span-1 overflow-hidden">
-        <div className="border-b p-4 font-semibold text-lg">
-          Version History
-        </div>
-        <ScrollArea className="h-full">
-          <div className="p-4 space-y-3">
-            {versions.length > 0 ? (
-              versions.map((version) => (
-                <button
-                  key={version.id}
-                  onClick={() => setSelectedVersion(version)}
-                  className={cn(
-                    "w-full text-left p-3 rounded-md transition-all group",
-                    selectedVersion?.id === version.id
-                      ? "bg-primary/10 border border-primary text-primary"
-                      : "hover:bg-muted/50 border border-transparent"
-                  )}
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="font-medium">v{version.number}</div>
-                    <div className="text-xs text-muted-foreground group-hover:text-foreground">
-                      {formatLocalTime(version.created_at)}
-                    </div>
-                  </div>
-                </button>
-              ))
-            ) : (
-              <div className="text-center text-muted-foreground py-8">
-                No versions available.
+      <motion.div
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className={cn(
+          "lg:col-span-1",
+          isVersionListOpen ? "block" : "hidden lg:block"
+        )}
+      >
+        <Card className="overflow-hidden border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <FileText className="h-5 w-5 text-muted-foreground" />
+              Version History
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="h-[calc(100vh-16rem)] lg:h-[calc(100vh-16rem)]">
+              <div className="p-4 space-y-2">
+                {versions.length > 0 ? (
+                  versions.map((version, index) => (
+                    <motion.button
+                      key={version.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={() => {
+                        setSelectedVersion(version);
+                        setIsVersionListOpen(false);
+                      }}
+                      className={cn(
+                        "w-full text-left p-3 rounded-lg transition-all group border",
+                        selectedVersion?.id === version.id
+                          ? "bg-blue-50 border-blue-200 text-blue-700"
+                          : "hover:bg-muted/50 border-transparent"
+                      )}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "font-medium",
+                              selectedVersion?.id === version.id
+                                ? "bg-blue-100 border-blue-200 text-blue-700"
+                                : "bg-muted"
+                            )}
+                          >
+                            v{version.number}
+                          </Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground group-hover:text-foreground flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {formatLocalTime(version.created_at)}
+                        </div>
+                      </div>
+                    </motion.button>
+                  ))
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center text-muted-foreground py-8 bg-muted/30 rounded-lg"
+                  >
+                    No versions available
+                  </motion.div>
+                )}
               </div>
-            )}
-          </div>
-        </ScrollArea>
-      </Card>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Version Details */}
-      <Card className="lg:col-span-2 overflow-hidden">
-        <div className="border-b p-4 font-semibold text-lg">
-          {selectedVersion
-            ? `Details for v${selectedVersion.number}`
-            : "Version Details"}
-        </div>
-        <ScrollArea className="h-full">
-          <div className="p-6 space-y-6">
-            {selectedVersion ? (
-              <>
-                <div className="space-y-2">
-                  <h3 className="text-md font-semibold">Metadata</h3>
-                  <div className="text-sm text-muted-foreground">
-                    <p>
-                      <strong>Version:</strong> {selectedVersion.number}
-                    </p>
-                    <p>
-                      <strong>Created At:</strong>{" "}
-                      {formatLocalTime(selectedVersion.created_at)}
-                    </p>
-                  </div>
-                </div>
+      <motion.div
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="lg:col-span-2"
+      >
+        <Card className="overflow-hidden border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <Code className="h-5 w-5 text-muted-foreground" />
+              {selectedVersion
+                ? `Version ${selectedVersion.number} Details`
+                : "Version Details"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="h-[calc(100vh-16rem)]">
+              <div className="p-4 lg:p-6 space-y-6">
+                <AnimatePresence mode="wait">
+                  {selectedVersion ? (
+                    <motion.div
+                      key={selectedVersion.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                          <h3 className="text-sm font-medium text-muted-foreground">
+                            Metadata
+                          </h3>
+                          <Badge variant="outline" className="bg-muted w-fit">
+                            {formatLocalTime(selectedVersion.created_at)}
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+                          <div>
+                            <p className="text-sm font-medium">
+                              Version Number
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              v{selectedVersion.number}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Created At</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {formatLocalTime(selectedVersion.created_at)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                <div className="space-y-2">
-                  <h3 className="text-md font-semibold">System Prompt</h3>
-                  <div className="p-4 bg-muted/50 rounded-md font-mono text-sm whitespace-pre-wrap">
-                    {selectedVersion.system_prompt}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="text-center text-muted-foreground py-12">
-                Select a version to view its details.
+                      <Separator className="my-6" />
+
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-medium text-muted-foreground">
+                          System Prompt
+                        </h3>
+                        <div className="p-4 bg-muted/30 rounded-lg border">
+                          <pre className="font-mono text-sm whitespace-pre-wrap text-muted-foreground">
+                            {selectedVersion.system_prompt}
+                          </pre>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex flex-col items-center justify-center h-[calc(100vh-24rem)] text-muted-foreground space-y-2"
+                    >
+                      <FileText className="h-8 w-8 opacity-50" />
+                      <p className="text-sm">
+                        Select a version to view its details
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            )}
-          </div>
-        </ScrollArea>
-      </Card>
-    </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 }

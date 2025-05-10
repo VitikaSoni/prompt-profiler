@@ -92,62 +92,53 @@ export default function TestCases({ promptId }: TestCasesProps) {
     return <div className="text-gray-500">No prompt selected</div>;
   }
 
-  if (isLoading) {
-    return <div className="text-gray-500">Loading test cases...</div>;
-  }
-
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center px-6 py-2">
-        {/* <h3 className="text-lg font-semibold">Test Cases</h3> */}
-        <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Test Case
-        </Button>
-      </div>
-
       <div className="flex-1 overflow-x-auto px-6">
-        {testCases.length === 0 ? (
-          <div className="text-gray-500 text-center py-4 h-[200px] flex items-center justify-center">
-            No test cases yet. Add your first test case!
-          </div>
-        ) : (
-          <div className="flex gap-4 py-4 min-w-full">
-            {testCases.map((testCase) => (
-              <Card
-                key={testCase.id}
-                className="w-[200px] h-[170px] flex flex-col hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0"
-                onClick={() => openViewDialog(testCase)}
-              >
-                <div className="flex flex-col flex-1">
-                  <CardContent className="flex-1 overflow-hidden mt-4">
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {testCase.user_message}
-                    </p>
-                  </CardContent>
+        <div className="flex gap-4 py-4 min-w-full">
+          <Card
+            className="w-[180px] h-[150px] flex flex-col hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0 border-dashed"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <div className="flex flex-col flex-1 items-center justify-center">
+              <Plus className="h-8 w-8 text-gray-400 mb-2" />
+              <p className="text-sm text-gray-500">Add Test Case</p>
+            </div>
+          </Card>
+          {testCases.map((testCase) => (
+            <Card
+              key={testCase.id}
+              className="w-[180px] h-[150px] flex flex-col hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0"
+              onClick={() => openViewDialog(testCase)}
+            >
+              <div className="flex flex-col flex-1">
+                <CardContent className="flex-1 overflow-hidden mt-4">
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {testCase.user_message}
+                  </p>
+                </CardContent>
 
-                  <CardFooter className="flex justify-end p-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-red-500 hover:text-red-600"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(testCase.id);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </CardFooter>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
+                <CardFooter className="flex justify-end p-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-red-500 hover:text-red-600"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(testCase.id);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardFooter>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* Add New Test Case Dialog */}

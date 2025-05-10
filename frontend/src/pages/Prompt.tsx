@@ -24,6 +24,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { motion, AnimatePresence } from "framer-motion";
+import Loading from "@/components/other/Loading";
 
 export default function Prompt() {
   const { id } = useParams<{ id: string }>();
@@ -46,15 +48,12 @@ export default function Prompt() {
     try {
       setIsLoading(true);
       setError(null);
-      const prompts = await promptsApi.getAllPrompts();
-      const foundPrompt = prompts.find((p) => p.id === parseInt(id!));
-      if (foundPrompt) {
-        setPrompt(foundPrompt);
+      const prompt = await promptsApi.getPrompt(parseInt(id!));
+      if (prompt) {
+        setPrompt(prompt);
         // Fetch current version's system prompt
         try {
-          const currentVersion = await versionsApi.getCurrentVersion(
-            foundPrompt.id
-          );
+          const currentVersion = await versionsApi.getCurrentVersion(prompt.id);
           if (currentVersion) {
             setSystemPrompt(currentVersion.system_prompt);
             setVersionNumber(currentVersion.number);
@@ -66,7 +65,7 @@ export default function Prompt() {
         // Fetch all versions
         try {
           const allVersions = await versionsApi.getVersionsByPromptId(
-            foundPrompt.id
+            prompt.id
           );
           setVersions(allVersions);
         } catch (error) {
@@ -96,15 +95,7 @@ export default function Prompt() {
   };
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto p-6 space-y-6">
-        <Skeleton className="h-8 w-64" />
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-[500px] w-full" />
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {
@@ -124,21 +115,12 @@ export default function Prompt() {
   }
 
   return (
-    <div className="mx-auto px-10 py-4 space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/prompts/${id}`}>
-              {prompt.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="mx-auto px-4 py-4 space-y-6"
+    >
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
@@ -161,19 +143,37 @@ export default function Prompt() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="editor" className="mt-0">
-          <EditorTab
-            versionNumber={versionNumber}
-            promptId={Number(id)}
-            initialSystemPrompt={systemPrompt}
-            onSave={handleSaveSystemPrompt}
-          />
-        </TabsContent>
+        <AnimatePresence mode="wait">
+          <TabsContent value="editor" className="mt-0">
+            <motion.div
+              key="editor"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <EditorTab
+                versionNumber={versionNumber}
+                promptId={Number(id)}
+                initialSystemPrompt={systemPrompt}
+                onSave={handleSaveSystemPrompt}
+              />
+            </motion.div>
+          </TabsContent>
 
-        <TabsContent value="versions" className="mt-0">
-          <VersionsTab versions={versions} />
-        </TabsContent>
+          <TabsContent value="versions" className="mt-0">
+            <motion.div
+              key="versions"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <VersionsTab versions={versions} />
+            </motion.div>
+          </TabsContent>
+        </AnimatePresence>
       </Tabs>
-    </div>
+    </motion.div>
   );
 }

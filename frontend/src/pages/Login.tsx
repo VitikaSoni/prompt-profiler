@@ -13,7 +13,7 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     try {
       await login();
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       setError("Failed to sign in with Google");
     }
@@ -23,13 +23,13 @@ export default function Login() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200"
+      className="min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8 bg-gradient-to-b from-gray-900 to-gray-800"
     >
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="w-full max-w-[90%] sm:max-w-md space-y-6 sm:space-y-8 p-6 sm:p-8 md:p-10 bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border border-blue-100"
+        className="w-full max-w-[90%] sm:max-w-md space-y-6 sm:space-y-8 p-6 sm:p-8 md:p-10 bg-gray-800/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border border-gray-700"
       >
         <div className="text-center">
           <motion.div
@@ -49,7 +49,7 @@ export default function Login() {
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#192b53] to-[#4d6eb4] bg-clip-text text-transparent"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
             >
               Prompt Profiler
             </motion.h1>
@@ -58,7 +58,7 @@ export default function Login() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="text-base sm:text-lg text-gray-600 font-medium"
+            className="text-base sm:text-lg text-gray-300 font-medium"
           >
             Your AI Prompt Management Platform
           </motion.p>
@@ -68,7 +68,7 @@ export default function Login() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="p-3 sm:p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg sm:rounded-xl text-sm font-medium"
+            className="p-3 sm:p-4 bg-red-900/50 border border-red-700 text-red-400 rounded-lg sm:rounded-xl text-sm font-medium"
           >
             {error}
           </motion.div>
@@ -82,7 +82,7 @@ export default function Login() {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-blue-200 transition-all duration-200 py-4 sm:py-6 text-sm sm:text-base font-medium rounded-lg sm:rounded-xl shadow-sm hover:shadow-md"
+              className="w-full flex items-center justify-center gap-3 bg-gray-700 text-white border border-gray-600 hover:bg-gray-600 hover:border-blue-500 transition-all duration-200 py-4 sm:py-6 text-sm sm:text-base font-medium rounded-lg sm:rounded-xl shadow-sm hover:shadow-md"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24">
                 <path
@@ -109,14 +109,14 @@ export default function Login() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="text-center text-xs sm:text-sm text-gray-500 mt-2 sm:mt-4"
+            className="text-center text-xs sm:text-sm text-gray-400 mt-2 sm:mt-4"
           >
             Made with ❤️ by{" "}
             <a
               href="https://github.com/vitikasoni"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+              className="text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200"
             >
               Vitika
             </a>

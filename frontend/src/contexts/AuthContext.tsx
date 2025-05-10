@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await firebaseSignOut(auth);
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (error) {
       console.error("Error signing out:", error);
     }

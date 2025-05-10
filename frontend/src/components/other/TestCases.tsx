@@ -89,11 +89,11 @@ export default function TestCases({ promptId }: TestCasesProps) {
   };
 
   if (!promptId) {
-    return <div className="text-gray-500">No prompt selected</div>;
+    return <div className="text-muted-foreground">No prompt selected</div>;
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return <div className="text-destructive">{error}</div>;
   }
 
   return (
@@ -101,18 +101,18 @@ export default function TestCases({ promptId }: TestCasesProps) {
       <div className="flex-1 overflow-x-auto px-6">
         <div className="flex gap-4 py-4 min-w-full">
           <Card
-            className="w-[180px] h-[150px] flex flex-col hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0 border-dashed"
+            className="w-[180px] h-[150px] flex flex-col hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0 border-dashed border-border"
             onClick={() => setIsDialogOpen(true)}
           >
             <div className="flex flex-col flex-1 items-center justify-center">
-              <Plus className="h-8 w-8 text-gray-400 mb-2" />
-              <p className="text-sm text-gray-500">Add Test Case</p>
+              <Plus className="h-8 w-8 text-muted-foreground mb-2" />
+              <p className="text-sm text-muted-foreground">Add Test Case</p>
             </div>
           </Card>
           {testCases.map((testCase) => (
             <Card
               key={testCase.id}
-              className="w-[180px] h-[150px] flex flex-col hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0"
+              className="w-[180px] h-[150px] flex flex-col hover:shadow-lg transition-shadow cursor-pointer flex-shrink-0 border-border"
               onClick={() => openViewDialog(testCase)}
             >
               <div className="flex flex-col flex-1">
@@ -126,7 +126,7 @@ export default function TestCases({ promptId }: TestCasesProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-red-500 hover:text-red-600"
+                    className="text-destructive hover:text-destructive/90"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDelete(testCase.id);
@@ -143,13 +143,15 @@ export default function TestCases({ promptId }: TestCasesProps) {
 
       {/* Add New Test Case Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-card border-border">
           <DialogHeader>
-            <DialogTitle>Add New Test Case</DialogTitle>
+            <DialogTitle className="text-foreground">
+              Add New Test Case
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-foreground">
                 User Message
               </label>
               <Textarea
@@ -161,7 +163,7 @@ export default function TestCases({ promptId }: TestCasesProps) {
                   }))
                 }
                 placeholder="Enter user message..."
-                className="min-h-[100px]"
+                className="min-h-[100px] bg-muted border-border text-foreground placeholder-muted-foreground"
               />
             </div>
           </div>
@@ -172,6 +174,7 @@ export default function TestCases({ promptId }: TestCasesProps) {
             <Button
               onClick={handleAdd}
               disabled={!newTestCase.user_message.trim()}
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
             >
               Add Test Case
             </Button>
@@ -181,16 +184,18 @@ export default function TestCases({ promptId }: TestCasesProps) {
 
       {/* View Test Case Dialog */}
       <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-card border-border">
           <DialogHeader>
-            <DialogTitle>Test Case {selectedTestCase?.id}</DialogTitle>
+            <DialogTitle className="text-foreground">
+              Test Case {selectedTestCase?.id}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-foreground">
                 User Message
               </label>
-              <div className="min-h-[200px] p-4 bg-gray-50 rounded-md whitespace-pre-wrap text-sm">
+              <div className="min-h-[200px] p-4 bg-muted rounded-md whitespace-pre-wrap text-sm text-foreground">
                 {selectedTestCase?.user_message}
               </div>
             </div>

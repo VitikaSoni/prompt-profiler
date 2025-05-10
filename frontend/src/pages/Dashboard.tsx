@@ -65,7 +65,7 @@ export default function Dashboard() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100"
+      className="min-h-screen bg-background"
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-4 sm:py-6 lg:py-8">
         {/* Header Section */}
@@ -73,13 +73,13 @@ export default function Dashboard() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8"
+          className="bg-card rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8 border border-border"
         >
           <div className="max-w-3xl">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
               Welcome back, {user?.displayName}
             </h1>
-            <p className="text-base sm:text-lg text-gray-600 mt-2">
+            <p className="text-base sm:text-lg text-muted-foreground mt-2">
               Manage your prompts and create new ones to enhance your workflow
             </p>
           </div>
@@ -90,14 +90,14 @@ export default function Dashboard() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 lg:p-8"
+          className="bg-card rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 border border-border"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground">
                 Your Prompts
               </h2>
-              <p className="text-sm sm:text-base text-gray-500 mt-1">
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">
                 {prompts.length} {prompts.length === 1 ? "prompt" : "prompts"}{" "}
                 in your collection
               </p>
@@ -106,7 +106,7 @@ export default function Dashboard() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsModalOpen(true)}
-              className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
             >
               <svg
                 className="h-5 w-5 mr-2"
@@ -159,7 +159,7 @@ export default function Dashboard() {
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="text-gray-400 mb-4"
+                  className="text-muted-foreground mb-4"
                 >
                   <svg
                     className="mx-auto h-12 w-12 sm:h-16 sm:w-16"
@@ -175,10 +175,10 @@ export default function Dashboard() {
                     />
                   </svg>
                 </motion.div>
-                <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">
+                <h3 className="text-lg sm:text-xl font-medium text-foreground mb-2">
                   No prompts yet
                 </h3>
-                <p className="text-sm sm:text-base text-gray-500 max-w-sm mx-auto px-4">
+                <p className="text-sm sm:text-base text-muted-foreground max-w-sm mx-auto px-4">
                   Get started by creating your first prompt. Click the "New
                   Prompt" button above to begin.
                 </p>

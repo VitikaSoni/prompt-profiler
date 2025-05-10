@@ -38,8 +38,8 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
       <div className="lg:hidden">
         <Button
           variant="outline"
-          className="w-full flex items-center justify-between"
           onClick={() => setIsVersionListOpen(!isVersionListOpen)}
+          className="w-full flex items-center justify-between"
         >
           <span className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
@@ -63,9 +63,9 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
           isVersionListOpen ? "block" : "hidden lg:block"
         )}
       >
-        <Card className="overflow-hidden border shadow-sm">
+        <Card className="overflow-hidden border border-border bg-card shadow-lg">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
               <FileText className="h-5 w-5 text-muted-foreground" />
               Version History
             </CardTitle>
@@ -87,8 +87,8 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
                       className={cn(
                         "w-full text-left p-3 rounded-lg transition-all group border",
                         selectedVersion?.id === version.id
-                          ? "bg-blue-50 border-blue-200 text-blue-700"
-                          : "hover:bg-muted/50 border-transparent"
+                          ? "bg-muted border-border text-foreground"
+                          : "hover:bg-muted/50 border-border text-muted-foreground"
                       )}
                     >
                       <div className="flex justify-between items-center">
@@ -98,8 +98,8 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
                             className={cn(
                               "font-medium",
                               selectedVersion?.id === version.id
-                                ? "bg-blue-100 border-blue-200 text-blue-700"
-                                : "bg-muted"
+                                ? "bg-muted border-border text-foreground"
+                                : "bg-muted border-border text-muted-foreground"
                             )}
                           >
                             v{version.number}
@@ -134,9 +134,9 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
         transition={{ delay: 0.2 }}
         className="lg:col-span-2"
       >
-        <Card className="overflow-hidden border shadow-sm">
+        <Card className="overflow-hidden border border-border bg-card shadow-lg">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <CardTitle className="text-lg font-semibold flex items-center gap-2 text-foreground">
               <Code className="h-5 w-5 text-muted-foreground" />
               {selectedVersion
                 ? `Version ${selectedVersion.number} Details`
@@ -160,13 +160,16 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
                           <h3 className="text-sm font-medium text-muted-foreground">
                             Metadata
                           </h3>
-                          <Badge variant="outline" className="bg-muted w-fit">
+                          <Badge
+                            variant="outline"
+                            className="bg-muted border-border text-muted-foreground w-fit"
+                          >
                             {formatLocalTime(selectedVersion.created_at)}
                           </Badge>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
                           <div>
-                            <p className="text-sm font-medium">
+                            <p className="text-sm font-medium text-foreground">
                               Version Number
                             </p>
                             <p className="text-sm text-muted-foreground mt-1">
@@ -174,7 +177,9 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
                             </p>
                           </div>
                           <div>
-                            <p className="text-sm font-medium">Created At</p>
+                            <p className="text-sm font-medium text-foreground">
+                              Created At
+                            </p>
                             <p className="text-sm text-muted-foreground mt-1">
                               {formatLocalTime(selectedVersion.created_at)}
                             </p>
@@ -188,8 +193,8 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
                         <h3 className="text-sm font-medium text-muted-foreground">
                           System Prompt
                         </h3>
-                        <div className="p-4 bg-muted/30 rounded-lg border">
-                          <pre className="font-mono text-sm whitespace-pre-wrap text-muted-foreground">
+                        <div className="p-4 bg-muted/30 rounded-lg border border-border">
+                          <pre className="font-mono text-sm whitespace-pre-wrap text-foreground">
                             {selectedVersion.system_prompt}
                           </pre>
                         </div>
@@ -199,13 +204,9 @@ export default function VersionsTab({ versions }: VersionsTabProps) {
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="flex flex-col items-center justify-center h-[calc(100vh-24rem)] text-muted-foreground space-y-2"
+                      className="text-center text-muted-foreground py-8 bg-muted/30 rounded-lg"
                     >
-                      <FileText className="h-8 w-8 opacity-50" />
-                      <p className="text-sm">
-                        Select a version to view its details
-                      </p>
+                      Select a version to view details
                     </motion.div>
                   )}
                 </AnimatePresence>

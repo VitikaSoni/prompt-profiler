@@ -87,7 +87,7 @@ export default function EditorTab({
       {/* Left Column - System Prompt and Test Cases */}
       <div className="flex flex-col h-full space-y-4 md:space-y-6 overflow-hidden">
         {/* System Prompt Section - Fixed */}
-        <Card className="border shadow-sm flex-1 flex flex-col">
+        <Card className="border border-border bg-card shadow-lg flex-1 flex flex-col">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -97,16 +97,16 @@ export default function EditorTab({
             <CardHeader className="pb-2 md:pb-4 flex-shrink-0">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
-                  <CardTitle className="text-lg md:text-xl font-semibold tracking-tight">
+                  <CardTitle className="text-lg md:text-xl font-semibold tracking-tight text-foreground">
                     System Prompt
                   </CardTitle>
-                  <CardDescription className="mt-1 text-sm md:text-base">
+                  <CardDescription className="mt-1 text-sm md:text-base text-muted-foreground">
                     Define the behavior and constraints for your AI assistant
                   </CardDescription>
                 </div>
                 <Badge
                   variant="outline"
-                  className="bg-blue-50 text-blue-700 border-blue-200 w-fit"
+                  className="bg-muted text-muted-foreground border-border w-fit"
                 >
                   Version {versionNumber}
                 </Badge>
@@ -117,7 +117,7 @@ export default function EditorTab({
                 <Textarea
                   value={systemPrompt}
                   onChange={(e) => setSystemPrompt(e.target.value)}
-                  className="font-mono resize-none text-sm flex-1 min-h-[200px] md:min-h-0"
+                  className="font-mono resize-none text-sm flex-1 min-h-[200px] md:min-h-0 bg-muted border-border text-foreground placeholder-muted-foreground focus:border-primary"
                   placeholder="Enter your system prompt here..."
                 />
                 <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4">
@@ -135,7 +135,7 @@ export default function EditorTab({
                     size="sm"
                     onClick={handleRun}
                     disabled={isRunning}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+                    className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white w-full sm:w-auto"
                   >
                     <Play className="h-4 w-4" />
                     {isRunning ? "Running..." : "Run Tests"}
@@ -152,12 +152,12 @@ export default function EditorTab({
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="border shadow-sm">
+          <Card className="border border-border bg-card shadow-lg">
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-semibold tracking-tight">
+              <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
                 Test Cases
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-muted-foreground">
                 Evaluate your system prompt against these test scenarios
               </CardDescription>
             </CardHeader>
@@ -177,14 +177,14 @@ export default function EditorTab({
         transition={{ delay: 0.3 }}
         className="flex flex-col h-full overflow-hidden"
       >
-        <Card className="flex-1 border shadow-sm flex flex-col overflow-hidden">
+        <Card className="flex-1 border border-border bg-card shadow-lg flex flex-col overflow-hidden">
           <CardHeader className="pb-2 md:pb-4 flex-shrink-0">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <CardTitle className="text-lg md:text-xl font-semibold tracking-tight">
+                <CardTitle className="text-lg md:text-xl font-semibold tracking-tight text-foreground">
                   Test Results
                 </CardTitle>
-                <CardDescription className="text-sm md:text-base">
+                <CardDescription className="text-sm md:text-base text-muted-foreground">
                   View the output of your system prompt against test cases
                 </CardDescription>
               </div>
@@ -197,54 +197,60 @@ export default function EditorTab({
                   >
                     <Badge
                       variant="secondary"
-                      className="bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1 w-fit"
+                      className="bg-yellow-900/50 text-yellow-300 border-yellow-700 flex items-center gap-1 w-fit"
                     >
                       <AlertCircle className="h-3 w-3" />
-                      Outdated
+                      Results outdated
                     </Badge>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </CardHeader>
-          <CardContent className="flex-1 overflow-y-auto">
+          <CardContent className="flex-1 overflow-auto">
             <AnimatePresence mode="wait">
               {runResults ? (
                 <motion.div
                   key="results"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="space-y-3 md:space-y-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-4"
                 >
                   {runResults.map((result, index) => (
                     <motion.div
-                      key={result.test_case_id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
+                      className="p-4 rounded-lg border border-border bg-muted"
                     >
-                      <Card className="bg-muted/30 border shadow-sm">
-                        <CardContent className="space-y-3 md:space-y-4 p-3 md:p-4">
-                          <div>
-                            <Label className="text-sm font-medium text-muted-foreground">
-                              User Message
-                            </Label>
-                            <p className="mt-2 text-sm bg-background p-2 md:p-3 rounded-md border">
-                              {result.user_message}
-                            </p>
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-foreground mb-2">
+                            Test Case {index + 1}
+                          </h4>
+                          <div className="space-y-2">
+                            <div>
+                              <p className="text-sm font-medium text-muted-foreground">
+                                Input
+                              </p>
+                              <p className="text-sm text-foreground mt-1">
+                                {result.user_message}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-muted-foreground">
+                                Output
+                              </p>
+                              <p className="text-sm text-foreground mt-1">
+                                {result.output}
+                              </p>
+                            </div>
                           </div>
-                          <Separator className="my-2" />
-                          <div>
-                            <Label className="text-sm font-medium text-muted-foreground">
-                              AI Response
-                            </Label>
-                            <p className="mt-2 text-sm font-mono bg-background p-2 md:p-3 rounded-md border whitespace-pre-wrap">
-                              {result.output}
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
+                        </div>
+                      </div>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -254,12 +260,9 @@ export default function EditorTab({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center justify-center h-full text-muted-foreground space-y-2"
+                  className="flex flex-col items-center justify-center h-full text-muted-foreground"
                 >
-                  <Play className="h-6 w-6 md:h-8 md:w-8 opacity-50" />
-                  <p className="text-sm md:text-base">
-                    Run the prompt to see test results
-                  </p>
+                  <p>Run tests to see results</p>
                 </motion.div>
               )}
             </AnimatePresence>
